@@ -292,6 +292,19 @@
             color: #0f172a;
         }
 
+        .match-badge {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            background: linear-gradient(to right, #10b981, #059669);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 999px;
+            pointer-events: none;
+        }
+
         .option-btn.disabled {
             opacity: 0.35;
             cursor: not-allowed;
@@ -724,14 +737,14 @@
 
     <script>
         const HAIR_STYLES = [
-            {id:1,name:'롱 웨이브',enName:'Long Wave',image:'https://images.unsplash.com/photo-1595476408011-702e1f0bd29a?w=400&h=500&fit=crop',description:'길이감 있는 웨이브로 우아하고 부드러운 분위기',length:'long',treatment:'perm',similar:[2,5],recommended:[3,4]},
-            {id:2,name:'루즈 매직',enName:'Loose Magic',image:'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=500&fit=crop&face',description:'자연스러운 매직으로 매일 스타일링이 쉬운 스타일',length:'medium',treatment:'magic',similar:[1,5],recommended:[6,8]},
-            {id:3,name:'숏 매직',enName:'Short Magic',image:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop&face',description:'짧은 길이의 매직펌으로 관리가 쉽고 청순한 느낌',length:'short',treatment:'magic',similar:[8,4],recommended:[1,2]},
-            {id:4,name:'밥 스타일',enName:'Bob Cut',image:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=500&fit=crop&face',description:'클래식하고 트렌디한 밥 스타일',length:'short',treatment:'straight',similar:[3,8],recommended:[6,7]},
-            {id:5,name:'레이어드 롱',enName:'Layered Long',image:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=500&fit=crop&face',description:'레이어로 움직임감을 주어 개성 있는 분위기',length:'long',treatment:'straight',similar:[1,2],recommended:[2,6]},
-            {id:6,name:'쎄탁 펌',enName:'Perm',image:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&face',description:'큼직한 웨이브의 쎄탁펌으로 부풀림감 강조',length:'medium',treatment:'perm',similar:[2,7],recommended:[1,5]},
-            {id:7,name:'스트레이트 숏',enName:'Straight Short',image:'https://images.unsplash.com/photo-1526510747491-58f928ec870f?w=400&h=500&fit=crop&face',description:'깔끔하고 세련된 직모 숏스타일',length:'short',treatment:'straight',similar:[3,4],recommended:[8,4]},
-            {id:8,name:'에프랑스',enName:'Effringe',image:'https://images.unsplash.com/photo-1519699234963-9bb97fd6c6ce?w=400&h=500&fit=crop&face',description:'귀 위의 가늘고 짧은 단발머리로 신선한 느낌',length:'short',treatment:'straight',similar:[3,7],recommended:[4,6]}
+            {id:1,name:'롱 웨이브',enName:'Long Wave',image:'https://images.unsplash.com/photo-1595476408011-702e1f0bd29a?w=400&h=500&fit=crop',description:'길이감 있는 웨이브로 우아하고 부드러운 분위기',length:'long',treatment:'perm',hairColor:'brown',ethnicity:'western',similar:[2,5],recommended:[3,4,8,7]},
+            {id:2,name:'루즈 매직',enName:'Loose Magic',image:'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=500&fit=crop&face',description:'자연스러운 매직으로 매일 스타일링이 쉬운 스타일',length:'medium',treatment:'magic',hairColor:'brown',ethnicity:'western',similar:[1,5],recommended:[6,8,3,4]},
+            {id:3,name:'숏 매직',enName:'Short Magic',image:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop&face',description:'짧은 길이의 매직펌으로 관리가 쉽고 청순한 느낌',length:'short',treatment:'magic',hairColor:'black',ethnicity:'asian',similar:[8,4],recommended:[1,2,7,5]},
+            {id:4,name:'밥 스타일',enName:'Bob Cut',image:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=500&fit=crop&face',description:'클래식하고 트렌디한 밥 스타일',length:'short',treatment:'straight',hairColor:'black',ethnicity:'asian',similar:[3,8],recommended:[6,7,1,5]},
+            {id:5,name:'레이어드 롱',enName:'Layered Long',image:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=500&fit=crop&face',description:'레이어로 움직임감을 주어 개성 있는 분위기',length:'long',treatment:'straight',hairColor:'brown',ethnicity:'western',similar:[1,2],recommended:[2,6,3,8]},
+            {id:6,name:'쎄탁 펌',enName:'Perm',image:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&face',description:'큼직한 웨이브의 쎄탁펌으로 부풀림감 강조',length:'medium',treatment:'perm',hairColor:'brown',ethnicity:'western',similar:[2,7],recommended:[1,5,3,4]},
+            {id:7,name:'스트레이트 숏',enName:'Straight Short',image:'https://images.unsplash.com/photo-1526510747491-58f928ec870f?w=400&h=500&fit=crop&face',description:'깔끔하고 세련된 직모 숏스타일',length:'short',treatment:'straight',hairColor:'black',ethnicity:'asian',similar:[3,4],recommended:[8,4,6,1]},
+            {id:8,name:'에프랑스',enName:'Effringe',image:'https://images.unsplash.com/photo-1519699234963-9bb97fd6c6ce?w=400&h=500&fit=crop&face',description:'귀 위의 가늘고 짧은 단발머리로 신선한 느낌',length:'short',treatment:'straight',hairColor:'black',ethnicity:'asian',similar:[3,7],recommended:[4,6,1,5]}
         ];
 
         let state = {
@@ -856,7 +869,7 @@
 
         function showResult() {
             const style = state.selectedStyle;
-            
+
             const imagesHtml = `
                 <div class="result-image">
                     <img src="${state.photoData}" alt="You">
@@ -875,31 +888,43 @@
             document.getElementById('resultImages').innerHTML = imagesHtml;
             document.getElementById('resultDesc').textContent = style.description;
             document.getElementById('mergedSection').style.display = 'block';
+            document.getElementById('mergeBtn').style.display = 'block';
+            document.getElementById('mergeResultBox').style.display = 'none';
+            document.getElementById('mergingLoader').style.display = 'none';
 
-            const similar = style.similar.map(id => HAIR_STYLES.find(s => s.id === id));
-            if (similar.length > 0) {
-                document.getElementById('similarSection').style.display = 'block';
-                document.getElementById('similarGrid').innerHTML = similar.map(s => `
-                    <button class="gallery-item" onclick="selectStyle(${s.id})">
-                        <img src="${s.image}" alt="${s.name}">
-                        <div class="gallery-item-label">
-                            <div class="gallery-item-name">${s.name}</div>
-                        </div>
-                    </button>
-                `).join('');
+            // 추천 스타일 항상 4개: 매칭(black+asian) 최대 3개, 나머지로 채움
+            const relatedIds = [...new Set([...style.recommended])];
+            const related = relatedIds.map(id => HAIR_STYLES.find(s => s.id === id)).filter(Boolean);
+
+            const userHair = style.hairColor;
+            const userEth  = style.ethnicity;
+
+            const matching = related.filter(s => s.hairColor === userHair && s.ethnicity === userEth);
+            const others   = related.filter(s => !(s.hairColor === userHair && s.ethnicity === userEth));
+
+            // 매칭 3 + 기타로 채워서 총 4개
+            let toShow = [...matching.slice(0, 3), ...others];
+            // 4개가 안 되면 전체 스타일에서 추가 (현재 스타일 제외)
+            if (toShow.length < 4) {
+                const extra = HAIR_STYLES.filter(s => s.id !== style.id && !toShow.find(t => t.id === s.id));
+                toShow = [...toShow, ...extra].slice(0, 4);
+            } else {
+                toShow = toShow.slice(0, 4);
             }
 
-            const recommended = style.recommended.map(id => HAIR_STYLES.find(s => s.id === id));
-            if (recommended.length > 0) {
+            document.getElementById('similarSection').style.display = 'none';
+            if (toShow.length > 0) {
                 document.getElementById('recommendedSection').style.display = 'block';
-                document.getElementById('recommendedGrid').innerHTML = recommended.map(s => `
-                    <button class="gallery-item" onclick="selectStyle(${s.id})">
+                document.getElementById('recommendedGrid').innerHTML = toShow.map(s => {
+                    const isMatch = s.hairColor === userHair && s.ethnicity === userEth;
+                    return `<button class="gallery-item" onclick="selectStyle(${s.id})">
                         <img src="${s.image}" alt="${s.name}">
+                        ${isMatch ? '<div class="match-badge">✓ 비슷한 느낌</div>' : ''}
                         <div class="gallery-item-label">
                             <div class="gallery-item-name">${s.name}</div>
                         </div>
-                    </button>
-                `).join('');
+                    </button>`;
+                }).join('');
             }
 
             goToStep('result');
@@ -932,7 +957,7 @@
                     body: JSON.stringify({ image: state.photoData, prompt })
                 });
 
-                const data = await resp.json();
+                const data = await resp.json().catch(() => { throw new Error('서버 연결 실패 (배포 환경에서만 동작합니다)'); });
                 if (!resp.ok || data.error) throw new Error(data.error || 'API 오류');
 
                 state.mergedImage = data.image;
