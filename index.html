@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HairAI - 헤어스타일 가이드</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HAIRAI2025"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HAIRAI2025');
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -888,7 +898,7 @@
                     <div class="footer-icon">📧</div>
                     <div class="footer-content">
                         <div class="footer-title">피드백 및 문의</div>
-                        <a href="mailto:obanaeodzb@naver.com" class="footer-email">obanaeodzb@naver.com</a>
+                        <a href="/cdn-cgi/l/email-protection#741b16151a15111b100e16341a150211065a171b19" class="footer-email"><span class="__cf_email__" data-cfemail="e788858689868288839d85a78986918295c984888a">[email&#160;protected]</span></a>
                     </div>
                 </div>
 
@@ -920,7 +930,7 @@
         </footer>
     </div>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         const HAIR_STYLES = [
             {id:1,name:'롱 웨이브',enName:'Long Wave',image:'https://images.unsplash.com/photo-1614008375890-cb53b6c5f8d5?w=400&h=500&fit=crop',description:'길이감 있는 웨이브로 우아하고 부드러운 분위기',length:'long',treatment:'perm',color:false,similar:[2,5],recommended:[3,4],tips:'3-4개월마다 펌 시술 필요, 드라이 시간이 길 수 있음',detail:'파마 스타일 · 염색 불필요 · 롱 헤어'},
             {id:2,name:'루즈 매직',enName:'Loose Magic',image:'https://images.unsplash.com/photo-1595434707802-6b2b8ef1bae4?w=400&h=500&fit=crop',description:'자연스러운 매직으로 매일 스타일링이 쉬운 스타일',length:'medium',treatment:'magic',color:false,similar:[1,5],recommended:[6,8],tips:'고데기(직모매직) 시술 필수, 2-3개월마다 리터치 권장',detail:'고데기(직모매직) · 염색 불필요 · 미디엄 헤어'},
@@ -1144,11 +1154,4 @@
 
         function reset() {
             state = {step:'upload',photoData:null,selectedStyle:null,mode:null,preferences:{color:'no',length:'',treatment:''}};
-            document.getElementById('photoInput').value = '';
-            document.getElementById('uploadPlaceholder').style.display = 'flex';
-            document.getElementById('photoPreview').style.display = 'none';
-            goToStep('upload');
-        }
-    </script>
-</body>
-</html>
+            document.getElementById('photoInpu
