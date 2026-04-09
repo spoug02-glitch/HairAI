@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HairAI - 헤어스타일 가이드</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a);
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        header {
+            border-bottom: 1px solid #1e293b;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header .container {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+        }
+
+        .hair-ai-logo {
+            display: inline;
+        }
+
+        .hair-ai-logo span {
+            font-weight: 600;
+            color: #fbbf24;
+        }
+
+        .reset-btn {
+            margin-left: auto;
+            padding: 0.5rem 0.75rem;
+            background: #1e293b;
+            color: #cbd5e1;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: #334155;
+        }
+
+        .header-desc {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem 1rem;
+        }
+
+        .step-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-center h2 {
+            font-size: 1.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .text-center p {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area {
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            aspect-ratio: 1;
+            border: 2px dashed #475569;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: #fbbf24;
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .upload-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .upload-placeholder-icon {
+            font-size: 2.5rem;
+        }
+
+        .upload-placeholder-text {
+            color: #cbd5e1;
+            font-size: 1.125rem;
+        }
+
+        .upload-placeholder-subtext {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        .privacy-box {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 1rem;
+            background: rgba(5, 150, 105, 0.1);
+            border: 1px solid #047857;
+            border-radius: 0.5rem;
+        }
+
+        .privacy-box-title {
+            color: #10b981;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .privacy-box-text {
+            color: #a7f3d0;
+            font-size: 0.875rem;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+
+        .choice-button {
+            padding: 1.5rem;
+            background: rgba(30, 41, 59, 0.5);
+            border: 2px solid #475569;
+            border-radius: 0.5rem;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .choice-button:hover {
+            border-color: #fbbf24;
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .choice-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .choice-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .choice-desc {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .gallery-item {
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            border-color: #fbbf24;
+            transform: scale(1.02);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .gallery-item-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0.75rem;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.9), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .gallery-item:hover .gallery-item-label {
+            opacity: 1;
+        }
+
+        .gallery-item-name {
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .gallery-item-en {
+            color: #fbbf24;
+            font-size: 0.75rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+        }
+
+        .option-group {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-group-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .option-buttons {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .option-btn {
+            padding: 0.75rem 1rem;
+            background: #1e293b;
+            border: none;
+            border-radius: 0.375rem;
+            color: #cbd5e1;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #334155;
+        }
+
+        .option-btn.active {
+            background: #fbbf24;
+            color: #0f172a;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(to right, #f59e0b, #f97316);
+            border: none;
+            border-radius: 0.5rem;
+            color: #0f172a;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: linear-gradient(to right, #d97706, #ea580c);
+        }
+
+        .submit-btn:disabled {
+            background: #475569;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .result-container {
+            max-width: 1280px;
+        }
+
+        .result-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-image {
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .result-image img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .result-image-label {
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.5);
+            border-top: 1px solid #475569;
+        }
+
+        .result-image-label.selected {
+            border-top-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .result-image-name {
+            font-weight: 600;
+            color: #fbbf24;
+        }
+
+        .result-image-name.default {
+            color: #cbd5e1;
+        }
+
+        .result-image-en {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .result-image-detail {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+
+        .info-box {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .info-box-desc {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .info-box-tips {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            border-left: 3px solid #fbbf24;
+        }
+
+        .info-box-tips-label {
+            color: #cbd5e1;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box-tips-text {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .share-section {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .share-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .share-btn {
+            padding: 0.75rem;
+            background: #1e293b;
+            border: none;
+            border-radius: 0.375rem;
+            color: #cbd5e1;
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .share-btn:hover {
+            background: #334155;
+        }
+
+        .share-btn.kakao {
+            background: #fef08a;
+            color: #1f2937;
+        }
+
+        .share-btn.kakao:hover {
+            background: #fde047;
+        }
+
+        .share-btn.instagram {
+            background: #ec4899;
+            color: white;
+        }
+
+        .share-btn.instagram:hover {
+            background: #db2777;
+        }
+
+        .share-icon {
+            font-size: 1.25rem;
+        }
+
+        .share-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(to right, #f59e0b, #f97316);
+            color: #0f172a;
+        }
+
+        .action-btn.primary:hover {
+            background: linear-gradient(to right, #d97706, #ea580c);
+        }
+
+        .action-btn.secondary {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+
+        .action-btn.secondary:hover {
+            background: #334155;
+        }
+
+        footer {
+            border-top: 1px solid #1e293b;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+        }
+
+        footer .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .footer-section {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .footer-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .footer-content {
+            flex: 1;
+        }
+
+        .footer-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .footer-email {
+            color: #fbbf24;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .footer-email:hover {
+            color: #fcd34d;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-column {
+            font-size: 0.875rem;
+        }
+
+        .footer-column-title {
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-column-list {
+            list-style: none;
+            space-y: 0.25rem;
+        }
+
+        .footer-column-list li {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px solid #475569;
+        }
+
+        .app-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .blue-box {
+            background: rgba(30, 58, 138, 0.1);
+            border: 1px solid #1e40af;
+            color: #bfdbfe;
+        }
+
+        .blue-box-title {
+            color: #93c5fd;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .blue-box-text {
+            font-size: 0.875rem;
+            color: #bfdbfe;
+        }
+
+        .blue-box-list {
+            list-style: none;
+            margin-top: 0.75rem;
+        }
+
+        .blue-box-list li {
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            header .container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .reset-btn {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                width: 100%;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .result-images {
+                grid-template-columns: 1fr;
+            }
+
+            main {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <header>
+            <div class="container" style="flex-wrap: wrap;">
+                <div>
+                    <h1>
+                        <span class="hair-ai-logo">Hair<span>AI</span></span>
+                    </h1>
+                    <p class="header-desc">당신의 얼굴에 어울릴 헤어스타일을 찾아보세요</p>
+                </div>
+                <button class="reset-btn" onclick="reset()" id="resetBtn" style="display: none;">← 처음으로</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- STEP 1: Upload -->
+            <div class="step-content active" id="step-upload">
+                <div class="text-center">
+                    <h2>사진을 선택해주세요</h2>
+                    <p>당신의 현재 헤어스타일 사진이 필요합니다</p>
+                </div>
+                <label style="display: block;">
+                    <div class="upload-area" onclick="document.getElementById('photoInput').click()">
+                        <div class="upload-placeholder" id="uploadPlaceholder">
+                            <div class="upload-placeholder-icon">📸</div>
+                            <div class="upload-placeholder-text">사진을 선택하세요</div>
+                            <div class="upload-placeholder-subtext">(JPG, PNG)</div>
+                        </div>
+                        <img id="photoPreview" style="display: none;">
+                    </div>
+                    <input type="file" accept="image/*" id="photoInput" class="upload-input" onchange="handlePhotoUpload(event)">
+                </label>
+                <div style="max-width: 500px; margin: 2rem auto;">
+                    <div class="privacy-box">
+                        <div class="privacy-box-title">🔒 프라이버시 보호</div>
+                        <div class="privacy-box-text">
+                            사진은 이 브라우저에서만 처리되며<br>
+                            <strong>서버에 저장되지 않습니다</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Select Mode -->
+            <div class="step-content" id="step-selectMode">
+                <div class="text-center">
+                    <h2>스타일을 찾는 방법을 선택하세요</h2>
+                    <p>갤러리에서 선택하거나 조건으로 검색할 수 있습니다</p>
+                </div>
+                <div class="grid grid-2" style="max-width: 800px; margin: 0 auto;">
+                    <button class="choice-button" onclick="setMode('gallery')">
+                        <div class="choice-icon">🎨</div>
+                        <div class="choice-title">갤러리에서 고르기</div>
+                        <div class="choice-desc">8가지 스타일을 직접 둘러보며 선택</div>
+                    </button>
+                    <button class="choice-button" onclick="setMode('prompt')">
+                        <div class="choice-icon">🔍</div>
+                        <div class="choice-title">조건으로 검색</div>
+                        <div class="choice-desc">기장, 시술, 염색 등 조건을 입력해서 추천받기</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3A: Gallery -->
+            <div class="step-content" id="step-gallery">
+                <div class="text-center">
+                    <h2>원하는 스타일을 선택하세요</h2>
+                </div>
+                <div class="gallery" id="galleryGrid"></div>
+            </div>
+
+            <!-- STEP 3B: Prompt -->
+            <div class="step-content" id="step-prompt">
+                <div class="text-center">
+                    <h2>원하는 스타일의 조건을 선택하세요</h2>
+                    <p>해당하는 항목을 모두 선택해야 합니다</p>
+                </div>
+                <div style="max-width: 600px; margin: 0 auto;">
+                    <div class="option-group">
+                        <div class="option-group-title">염색을 하시겠어요?</div>
+                        <div class="option-buttons" style="grid-template-columns: 1fr 1fr;">
+                            <button class="option-btn" onclick="setPreference('color', 'no')">하지 않음</button>
+                            <button class="option-btn" onclick="setPreference('color', 'yes')">할 예정</button>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <div class="option-group-title">기장을 선택하세요</div>
+                        <div class="option-buttons">
+                            <button class="option-btn" onclick="setPreference('length', 'short')">숏 (목 위)</button>
+                            <button class="option-btn" onclick="setPreference('length', 'medium')">미디엄 (어깨 근처)</button>
+                            <button class="option-btn" onclick="setPreference('length', 'long')">롱 (어깨 아래)</button>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <div class="option-group-title">시술 종류는?</div>
+                        <div style="margin-bottom: 1rem; font-size: 0.875rem; color: #cbd5e1;">
+                            <p>💡 <strong>파마:</strong> 탄력있는 웨이브 (큰 웨이브, 쎄탁펌)</p>
+                            <p style="margin-top: 0.5rem;">💡 <strong>고데기:</strong> 직모 매직펌 (매직, 직모 스타일링)</p>
+                            <p style="margin-top: 0.5rem;">💡 <strong>직모:</strong> 시술 없이 자연스러운 직모</p>
+                        </div>
+                        <div class="option-buttons">
+                            <button class="option-btn" onclick="setPreference('treatment', 'perm')">파마 (웨이브)</button>
+                            <button class="option-btn" onclick="setPreference('treatment', 'magic')">고데기 (직모매직)</button>
+                            <button class="option-btn" onclick="setPreference('treatment', 'straight')">직모 (시술 없음)</button>
+                        </div>
+                    </div>
+
+                    <button class="submit-btn" onclick="showPromptResult()" id="promptSubmit" disabled>
+                        추천 스타일 보기
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Prompt Result -->
+            <div class="step-content" id="step-promptResult">
+                <div class="text-center">
+                    <h2>추천 스타일</h2>
+                    <p>선택한 조건에 맞는 스타일들입니다 · 클릭해서 자세히 보기</p>
+                </div>
+                <div class="gallery" id="promptResultGrid"></div>
+            </div>
+
+            <!-- STEP 5: Result Detail -->
+            <div class="step-content" id="step-result">
+                <div class="result-container">
+                    <h2 class="section-title">당신이 선택한 스타일</h2>
+                    <div class="result-images" id="resultImages"></div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">스타일 정보</div>
+                        <div class="info-box-desc" id="resultDesc"></div>
+                        <div class="info-box-tips">
+                            <div class="info-box-tips-label">💡 관리 및 유지 팁</div>
+                            <div class="info-box-tips-text" id="resultTips"></div>
+                        </div>
+                    </div>
+
+                    <div id="similarSection" style="display: none;">
+                        <h2 class="section-title">비슷한 스타일</h2>
+                        <div class="gallery" id="similarGrid"></div>
+                    </div>
+
+                    <div id="recommendedSection" style="display: none;">
+                        <h2 class="section-title">함께 고려해볼 스타일</h2>
+                        <div class="gallery" id="recommendedGrid"></div>
+                    </div>
+
+                    <div class="info-box blue-box">
+                        <div class="blue-box-title">💬 미용사와 상담할 때</div>
+                        <div>
+                            <div class="blue-box-text"><strong>파마 vs 고데기:</strong></div>
+                            <ul class="blue-box-list">
+                                <li>• 파마: 탄력있는 웨이브 (3-4개월 지속)</li>
+                                <li>• 고데기: 자연스러운 직모/매직 (2-3개월 지속)</li>
+                            </ul>
+                            <p class="blue-box-text" style="margin-top: 0.75rem;"><strong>사진이 있을 때:</strong> 직접 보여주며 "이 스타일 가능한가요?"라고 물어보기</p>
+                            <p class="blue-box-text" style="margin-top: 0.5rem;"><strong>사진이 없을 때:</strong> "파마/고데기 중 어떤 것인지"를 먼저 확인하고 설명하기</p>
+                        </div>
+                    </div>
+
+                    <div class="share-section">
+                        <div class="info-box-title">친구들과 공유하기</div>
+                        <div class="share-buttons">
+                            <button class="share-btn" onclick="shareToX()">
+                                <div class="share-icon">𝕏</div>
+                                <div class="share-label">X</div>
+                            </button>
+                            <button class="share-btn kakao" onclick="shareToKakao()">
+                                <div class="share-icon">💬</div>
+                                <div class="share-label">카톡</div>
+                            </button>
+                            <button class="share-btn instagram" onclick="shareToInstagram()">
+                                <div class="share-icon">📷</div>
+                                <div class="share-label">인스타</div>
+                            </button>
+                            <button class="share-btn" onclick="copyLink()">
+                                <div class="share-icon">🔗</div>
+                                <div class="share-label">링크</div>
+                            </button>
+                            <button class="share-btn" onclick="copyText()">
+                                <div class="share-icon">📋</div>
+                                <div class="share-label">복사</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="action-btn primary" onclick="goToSelectMode()">다른 스타일 보기</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="container">
+                <div class="footer-section">
+                    <div class="footer-icon">📧</div>
+                    <div class="footer-content">
+                        <div class="footer-title">피드백 및 문의</div>
+                        <a href="mailto:obanaeodzb@naver.com" class="footer-email">obanaeodzb@naver.com</a>
+                    </div>
+                </div>
+
+                <div class="footer-grid">
+                    <div class="footer-column">
+                        <div class="footer-column-title">🔐 데이터 보호</div>
+                        <ul class="footer-column-list">
+                            <li>✓ 모든 사진은 브라우저 로컬에서만 처리</li>
+                            <li>✓ 서버 저장 없음</li>
+                            <li>✓ 제3자 공유 없음</li>
+                            <li>✓ 새로고침하면 자동 삭제</li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <div class="footer-column-title">📌 주의사항</div>
+                        <ul class="footer-column-list">
+                            <li>• 사진은 참고용입니다</li>
+                            <li>• 실제 결과는 미용사와 상담 후</li>
+                            <li>• 얼굴형/톤에 따라 다를 수 있음</li>
+                            <li>• 정기적 관리가 필수입니다</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    Made with care for your hair journey • Privacy first
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const HAIR_STYLES = [
+            {id:1,name:'롱 웨이브',enName:'Long Wave',image:'https://images.unsplash.com/photo-1614008375890-cb53b6c5f8d5?w=400&h=500&fit=crop',description:'길이감 있는 웨이브로 우아하고 부드러운 분위기',length:'long',treatment:'perm',color:false,similar:[2,5],recommended:[3,4],tips:'3-4개월마다 펌 시술 필요, 드라이 시간이 길 수 있음',detail:'파마 스타일 · 염색 불필요 · 롱 헤어'},
+            {id:2,name:'루즈 매직',enName:'Loose Magic',image:'https://images.unsplash.com/photo-1595434707802-6b2b8ef1bae4?w=400&h=500&fit=crop',description:'자연스러운 매직으로 매일 스타일링이 쉬운 스타일',length:'medium',treatment:'magic',color:false,similar:[1,5],recommended:[6,8],tips:'고데기(직모매직) 시술 필수, 2-3개월마다 리터치 권장',detail:'고데기(직모매직) · 염색 불필요 · 미디엄 헤어'},
+            {id:3,name:'숏 매직',enName:'Short Magic',image:'https://images.unsplash.com/photo-1562599810-d0e89f78b7ca?w=400&h=500&fit=crop',description:'짧은 길이의 매직펌으로 관리가 쉽고 청순한 느낌',length:'short',treatment:'magic',color:false,similar:[8,4],recommended:[1,2],tips:'6주마다 커트 권장, 고데기(직모매직)은 3-4개월 지속',detail:'고데기(직모매직) · 염색 불필요 · 숏 헤어'},
+            {id:4,name:'밥 스타일',enName:'Bob Cut',image:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop',description:'클래식하고 트렌디한 밥 스타일, 얼굴형을 커버',length:'short',treatment:'straight',color:false,similar:[3,8],recommended:[6,7],tips:'4-6주마다 라인 정리 필요, 고데기 또는 파마와 조합 가능',detail:'직모(시술 없음) · 염색 불필요 · 숏 헤어'},
+            {id:5,name:'레이어드 롱',enName:'Layered Long',image:'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=400&h=500&fit=crop',description:'레이어로 움직임감을 주어 개성 있는 분위기',length:'long',treatment:'straight',color:false,similar:[1,2],recommended:[2,6],tips:'3개월마다 커트 권장, 드라이 방법이 중요',detail:'직모(시술 없음) · 염색 불필요 · 롱 헤어'},
+            {id:6,name:'쎄탁 펌',enName:'Perm',image:'https://images.unsplash.com/photo-1560869897-fc0cdbdfa4d5?w=400&h=500&fit=crop',description:'큼직한 웨이브의 쎄탁펌으로 부풀림감 강조',length:'medium',treatment:'perm',color:false,similar:[2,7],recommended:[1,5],tips:'시술 후 3일간 감지 금지, 한달마다 에센스 팩 권장 (파마 스타일)',detail:'파마 스타일 · 염색 불필요 · 미디엄 헤어'},
+            {id:7,name:'스트레이트 숏',enName:'Straight Short',image:'https://images.unsplash.com/photo-1599887877129-d54f4a6f4200?w=400&h=500&fit=crop',description:'깔끔하고 세련된 직모 숏스타일, 어떤 얼굴형이든 소화 가능',length:'short',treatment:'straight',color:false,similar:[3,4],recommended:[8,4],tips:'4주마다 라인 정리, 헤어에센스로 광택 유지',detail:'직모(시술 없음) · 염색 불필요 · 숏 헤어'},
+            {id:8,name:'에프랑스',enName:'Effringe',image:'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=400&h=500&fit=crop',description:'귀 위의 가늘고 짧은 단발머리로 신선한 느낌',length:'short',treatment:'straight',color:false,similar:[3,7],recommended:[4,6],tips:'3주마다 커트 필요, 드라이 기술 중요',detail:'직모(시술 없음) · 염색 불필요 · 숏 헤어'}
+        ];
+
+        let state = {
+            step: 'upload',
+            photoData: null,
+            selectedStyle: null,
+            mode: null,
+            preferences: {color:'no',length:'',treatment:''}
+        };
+
+        function goToStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${step}`).classList.add('active');
+            state.step = step;
+            document.getElementById('resetBtn').style.display = state.step === 'upload' ? 'none' : 'block';
+        }
+
+        function handlePhotoUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    state.photoData = event.target.result;
+                    document.getElementById('uploadPlaceholder').style.display = 'none';
+                    document.getElementById('photoPreview').src = state.photoData;
+                    document.getElementById('photoPreview').style.display = 'block';
+                    setTimeout(() => goToStep('selectMode'), 300);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function setMode(mode) {
+            state.mode = mode;
+            if (mode === 'gallery') {
+                renderGallery();
+                goToStep('gallery');
+            } else {
+                goToStep('prompt');
+            }
+        }
+
+        function setPreference(key, value) {
+            state.preferences[key] = value;
+            updatePromptUI();
+        }
+
+        function updatePromptUI() {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('active');
+                const parent = btn.parentElement;
+                if (parent.id === 'colorBtns' && state.preferences.color === btn.dataset.value) btn.classList.add('active');
+                if (parent.id === 'lengthBtns' && state.preferences.length === btn.dataset.value) btn.classList.add('active');
+                if (parent.id === 'treatmentBtns' && state.preferences.treatment === btn.dataset.value) btn.classList.add('active');
+            });
+            const allSet = state.preferences.length && state.preferences.treatment;
+            document.getElementById('promptSubmit').disabled = !allSet;
+        }
+
+        function renderGallery() {
+            const html = HAIR_STYLES.map(style => `
+                <button class="gallery-item" onclick="selectStyle(${style.id})">
+                    <img src="${style.image}" alt="${style.name}">
+                    <div class="gallery-item-label">
+                        <div class="gallery-item-name">${style.name}</div>
+                        <div class="gallery-item-en">${style.enName}</div>
+                    </div>
+                </button>
+            `).join('');
+            document.getElementById('galleryGrid').innerHTML = html;
+        }
+
+        function showPromptResult() {
+            const filtered = HAIR_STYLES.filter(style => {
+                if (state.preferences.length && style.length !== state.preferences.length) return false;
+                if (state.preferences.treatment && style.treatment !== state.preferences.treatment) return false;
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                alert('선택한 조건에 맞는 스타일이 없습니다.');
+                return;
+            }
+
+            const html = filtered.map(style => `
+                <button class="gallery-item" onclick="selectStyle(${style.id})">
+                    <img src="${style.image}" alt="${style.name}">
+                    <div class="gallery-item-label">
+                        <div class="gallery-item-name">${style.name}</div>
+                        <div class="gallery-item-en">${style.enName}</div>
+                    </div>
+                </button>
+            `).join('');
+            document.getElementById('promptResultGrid').innerHTML = html;
+            goToStep('promptResult');
+        }
+
+        function selectStyle(id) {
+            state.selectedStyle = HAIR_STYLES.find(s => s.id === id);
+            showResult();
+        }
+
+        function showResult() {
+            const style = state.selectedStyle;
+            
+            // Images
+            const imagesHtml = `
+                <div class="result-image">
+                    <img src="${state.photoData}" alt="You">
+                    <div class="result-image-label">
+                        <div class="result-image-name default">당신의 사진</div>
+                        <div class="result-image-detail">(로컬에만 저장)</div>
+                    </div>
+                </div>
+                <div class="result-image">
+                    <img src="${style.image}" alt="${style.name}">
+                    <div class="result-image-label selected">
+                        <div class="result-image-name">${style.name}</div>
+                        <div class="result-image-en">${style.enName}</div>
+                        <div class="result-image-detail">${style.detail}</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('resultImages').innerHTML = imagesHtml;
+            document.getElementById('resultDesc').textContent = style.description;
+            document.getElementById('resultTips').textContent = style.tips;
+
+            // Similar
+            const similar = style.similar.map(id => HAIR_STYLES.find(s => s.id === id));
+            if (similar.length > 0) {
+                document.getElementById('similarSection').style.display = 'block';
+                document.getElementById('similarGrid').innerHTML = similar.map(s => `
+                    <button class="gallery-item" onclick="selectStyle(${s.id})">
+                        <img src="${s.image}" alt="${s.name}">
+                        <div class="gallery-item-label">
+                            <div class="gallery-item-name">${s.name}</div>
+                            <div class="gallery-item-en">${s.enName}</div>
+                        </div>
+                    </button>
+                `).join('');
+            } else {
+                document.getElementById('similarSection').style.display = 'none';
+            }
+
+            // Recommended
+            const recommended = style.recommended.map(id => HAIR_STYLES.find(s => s.id === id));
+            if (recommended.length > 0) {
+                document.getElementById('recommendedSection').style.display = 'block';
+                document.getElementById('recommendedGrid').innerHTML = recommended.map(s => `
+                    <button class="gallery-item" onclick="selectStyle(${s.id})">
+                        <img src="${s.image}" alt="${s.name}">
+                        <div class="gallery-item-label">
+                            <div class="gallery-item-name">${s.name}</div>
+                            <div class="gallery-item-en">${s.enName}</div>
+                        </div>
+                    </button>
+                `).join('');
+            } else {
+                document.getElementById('recommendedSection').style.display = 'none';
+            }
+
+            goToStep('result');
+        }
+
+        function getShareHashtags() {
+            const style = state.selectedStyle;
+            const baseHashtags = '#HairAI #헤어스타일';
+            const styleHashtag = `#${style.name}`;
+            const lengthHashtag = style.length === 'short' ? '#숏' : style.length === 'medium' ? '#미디엄' : '#롱';
+            const treatmentHashtag = style.treatment === 'perm' ? '#파마' : style.treatment === 'magic' ? '#고데기 #직모매직' : '#직모';
+            return `${baseHashtags} ${styleHashtag} ${lengthHashtag} ${treatmentHashtag}`;
+        }
+
+        function getShareText() {
+            const style = state.selectedStyle;
+            return `🎨 ${style.name} (${style.enName})\n\n${style.description}\n\n${style.detail}`;
+        }
+
+        function shareToX() {
+            const text = `${getShareText()}\n\n${getShareHashtags()}\n\n`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank', 'width=550,height=420');
+        }
+
+        function shareToKakao() {
+            const text = `${getShareText()}\n\n${getShareHashtags()}`;
+            navigator.clipboard.writeText(text);
+            alert('텍스트가 복사되었습니다.\n카카오톡을 열어서 붙여넣기 해주세요!');
+        }
+
+        function shareToInstagram() {
+            const text = `${getShareText()}\n\n${getShareHashtags()}`;
+            navigator.clipboard.writeText(text);
+            alert('텍스트가 복사되었습니다.\n인스타그램 스토리/게시물에 붙여넣기 해주세요!');
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href);
+            alert('링크가 복사되었습니다!');
+        }
+
+        function copyText() {
+            const text = `${getShareText()}\n\n${getShareHashtags()}`;
+            navigator.clipboard.writeText(text);
+            alert('복사되었습니다!');
+        }
+
+        function goToSelectMode() {
+            state.mode = null;
+            state.selectedStyle = null;
+            goToStep('selectMode');
+        }
+
+        function reset() {
+            state = {step:'upload',photoData:null,selectedStyle:null,mode:null,preferences:{color:'no',length:'',treatment:''}};
+            document.getElementById('photoInput').value = '';
+            document.getElementById('uploadPlaceholder').style.display = 'flex';
+            document.getElementById('photoPreview').style.display = 'none';
+            goToStep('upload');
+        }
+    </script>
+</body>
+</html>
