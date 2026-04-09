@@ -292,6 +292,20 @@
             color: #0f172a;
         }
 
+        .option-btn.disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .option-btn.disabled::after {
+            content: '해당 없음';
+            position: absolute;
+            right: 0.75rem;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
         .submit-btn {
             width: 100%;
             padding: 1rem;
@@ -526,16 +540,17 @@
                     <h2>사진을 선택해주세요</h2>
                     <p>당신의 현재 헤어스타일 사진이 필요합니다</p>
                 </div>
-                <label style="display: block;">
-                    <div class="upload-area" onclick="document.getElementById('photoInput').click()">
-                        <div class="upload-placeholder" id="uploadPlaceholder">
-                            <div class="upload-placeholder-icon">📸</div>
-                            <div class="upload-placeholder-text">사진을 선택하세요</div>
-                        </div>
-                        <img id="photoPreview" style="display: none;">
+                <label for="photoInput" class="upload-area" style="max-width: 500px; margin: 0 auto 1rem; display: block; cursor: pointer;">
+                    <div class="upload-placeholder" id="uploadPlaceholder">
+                        <div class="upload-placeholder-icon">📸</div>
+                        <div class="upload-placeholder-text">사진을 선택하세요</div>
                     </div>
-                    <input type="file" accept="image/*" id="photoInput" class="upload-input" onchange="handlePhotoUpload(event)">
+                    <img id="photoPreview" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                 </label>
+                <input type="file" accept="image/*" id="photoInput" class="upload-input" onchange="handlePhotoUpload(event)">
+                <div style="max-width: 500px; margin: 0 auto 1rem; display: none;" id="nextBtnWrap">
+                    <button class="submit-btn" onclick="goToStep('selectMode')">다음 →</button>
+                </div>
                 <div style="max-width: 500px; margin: 2rem auto;">
                     <div class="privacy-box">
                         <div class="privacy-box-title">🔒 프라이버시 보호</div>
@@ -627,24 +642,21 @@
                     <div class="result-images" id="resultImages"></div>
 
                     <div id="mergedSection" style="display: none; margin-bottom: 2rem;">
-                        <h2 class="section-title">🎨 AI 합성 결과</h2>
+                        <h2 class="section-title">🤖 AI 헤어 합성</h2>
                         <div style="max-width: 600px; margin: 0 auto;">
-                            <div class="info-box" style="text-align: center;">
-                                <div style="position: relative;">
-                                    <img id="mergedImage" style="width: 100%; border-radius: 0.5rem; margin-bottom: 1rem; display: none;" />
-                                    <div id="mergingLoader" style="text-align: center; padding: 2rem; display: none;">
-                                        <div class="loading" style="margin: 0 auto; margin-bottom: 1rem;"></div>
-                                        <p style="color: #cbd5e1;">AI가 당신의 얼굴에 헤어스타일을 합성 중...</p>
-                                        <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 0.5rem;">30초~1분 정도 소요됩니다</p>
-                                    </div>
-                                </div>
-                                <p style="color: #cbd5e1; font-size: 0.875rem;">당신의 얼굴에 이 헤어스타일이 어울리는 모습입니다</p>
+                            <div id="mergeResultBox" style="display:none; text-align:center;">
+                                <img id="mergedImage" style="width:100%; border-radius:0.75rem; margin-bottom:1rem;">
+                                <button class="submit-btn" onclick="downloadMergedImage()" style="background:linear-gradient(to right,#10b981,#059669);">
+                                    💾 합성 이미지 다운로드
+                                </button>
                             </div>
-                            <button class="submit-btn merge-btn" onclick="createMergedImage()" id="mergeBtn" style="margin-top: 1rem;">
-                                ✨ AI로 합성하기
-                            </button>
-                            <button class="submit-btn" onclick="downloadMergedImage()" id="downloadBtn" style="margin-top: 0.5rem; background: linear-gradient(to right, #10b981, #059669); display: none;">
-                                💾 합성 이미지 다운로드
+                            <div id="mergingLoader" style="display:none; text-align:center; padding:2rem;">
+                                <div class="loading" style="margin:0 auto 1rem;"></div>
+                                <p style="color:#cbd5e1;">AI가 헤어스타일 합성 중...</p>
+                                <p style="color:#94a3b8; font-size:0.8rem; margin-top:0.5rem;">30초~2분 소요됩니다</p>
+                            </div>
+                            <button class="submit-btn merge-btn" onclick="createMergedImage()" id="mergeBtn">
+                                ✨ AI 합성하기
                             </button>
                         </div>
                     </div>
@@ -712,14 +724,14 @@
 
     <script>
         const HAIR_STYLES = [
-            {id:1,name:'롱 웨이브',enName:'Long Wave',image:'https://images.unsplash.com/photo-1614008375890-cb53b6c5f8d5?w=400&h=500&fit=crop',description:'길이감 있는 웨이브로 우아하고 부드러운 분위기',length:'long',treatment:'perm',similar:[2,5],recommended:[3,4]},
-            {id:2,name:'루즈 매직',enName:'Loose Magic',image:'https://images.unsplash.com/photo-1595434707802-6b2b8ef1bae4?w=400&h=500&fit=crop',description:'자연스러운 매직으로 매일 스타일링이 쉬운 스타일',length:'medium',treatment:'magic',similar:[1,5],recommended:[6,8]},
-            {id:3,name:'숏 매직',enName:'Short Magic',image:'https://images.unsplash.com/photo-1562599810-d0e89f78b7ca?w=400&h=500&fit=crop',description:'짧은 길이의 매직펌으로 관리가 쉽고 청순한 느낌',length:'short',treatment:'magic',similar:[8,4],recommended:[1,2]},
-            {id:4,name:'밥 스타일',enName:'Bob Cut',image:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop',description:'클래식하고 트렌디한 밥 스타일',length:'short',treatment:'straight',similar:[3,8],recommended:[6,7]},
-            {id:5,name:'레이어드 롱',enName:'Layered Long',image:'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=400&h=500&fit=crop',description:'레이어로 움직임감을 주어 개성 있는 분위기',length:'long',treatment:'straight',similar:[1,2],recommended:[2,6]},
-            {id:6,name:'쎄탁 펌',enName:'Perm',image:'https://images.unsplash.com/photo-1560869897-fc0cdbdfa4d5?w=400&h=500&fit=crop',description:'큼직한 웨이브의 쎄탁펌으로 부풀림감 강조',length:'medium',treatment:'perm',similar:[2,7],recommended:[1,5]},
-            {id:7,name:'스트레이트 숏',enName:'Straight Short',image:'https://images.unsplash.com/photo-1599887877129-d54f4a6f4200?w=400&h=500&fit=crop',description:'깔끔하고 세련된 직모 숏스타일',length:'short',treatment:'straight',similar:[3,4],recommended:[8,4]},
-            {id:8,name:'에프랑스',enName:'Effringe',image:'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=400&h=500&fit=crop',description:'귀 위의 가늘고 짧은 단발머리로 신선한 느낌',length:'short',treatment:'straight',similar:[3,7],recommended:[4,6]}
+            {id:1,name:'롱 웨이브',enName:'Long Wave',image:'https://images.unsplash.com/photo-1595476408011-702e1f0bd29a?w=400&h=500&fit=crop',description:'길이감 있는 웨이브로 우아하고 부드러운 분위기',length:'long',treatment:'perm',similar:[2,5],recommended:[3,4]},
+            {id:2,name:'루즈 매직',enName:'Loose Magic',image:'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=500&fit=crop&face',description:'자연스러운 매직으로 매일 스타일링이 쉬운 스타일',length:'medium',treatment:'magic',similar:[1,5],recommended:[6,8]},
+            {id:3,name:'숏 매직',enName:'Short Magic',image:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop&face',description:'짧은 길이의 매직펌으로 관리가 쉽고 청순한 느낌',length:'short',treatment:'magic',similar:[8,4],recommended:[1,2]},
+            {id:4,name:'밥 스타일',enName:'Bob Cut',image:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=500&fit=crop&face',description:'클래식하고 트렌디한 밥 스타일',length:'short',treatment:'straight',similar:[3,8],recommended:[6,7]},
+            {id:5,name:'레이어드 롱',enName:'Layered Long',image:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=500&fit=crop&face',description:'레이어로 움직임감을 주어 개성 있는 분위기',length:'long',treatment:'straight',similar:[1,2],recommended:[2,6]},
+            {id:6,name:'쎄탁 펌',enName:'Perm',image:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&face',description:'큼직한 웨이브의 쎄탁펌으로 부풀림감 강조',length:'medium',treatment:'perm',similar:[2,7],recommended:[1,5]},
+            {id:7,name:'스트레이트 숏',enName:'Straight Short',image:'https://images.unsplash.com/photo-1526510747491-58f928ec870f?w=400&h=500&fit=crop&face',description:'깔끔하고 세련된 직모 숏스타일',length:'short',treatment:'straight',similar:[3,4],recommended:[8,4]},
+            {id:8,name:'에프랑스',enName:'Effringe',image:'https://images.unsplash.com/photo-1519699234963-9bb97fd6c6ce?w=400&h=500&fit=crop&face',description:'귀 위의 가늘고 짧은 단발머리로 신선한 느낌',length:'short',treatment:'straight',similar:[3,7],recommended:[4,6]}
         ];
 
         let state = {
@@ -747,7 +759,7 @@
                     document.getElementById('uploadPlaceholder').style.display = 'none';
                     document.getElementById('photoPreview').src = state.photoData;
                     document.getElementById('photoPreview').style.display = 'block';
-                    setTimeout(() => goToStep('selectMode'), 300);
+                    document.getElementById('nextBtnWrap').style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             }
@@ -764,14 +776,38 @@
         }
 
         function setPreference(key, value) {
+            const btn = event && event.currentTarget;
+            if (btn && btn.classList.contains('disabled')) return;
             state.preferences[key] = value;
+            if (key === 'length') {
+                // 새 기장 선택 시 사용 불가 시술이면 초기화
+                const available = getAvailableTreatments(value);
+                if (state.preferences.treatment && !available.includes(state.preferences.treatment)) {
+                    state.preferences.treatment = '';
+                }
+            }
             updatePromptUI();
         }
 
+        function getAvailableTreatments(length) {
+            if (!length) return ['perm', 'magic', 'straight'];
+            return [...new Set(HAIR_STYLES.filter(s => s.length === length).map(s => s.treatment))];
+        }
+
         function updatePromptUI() {
-            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('active'));
-            const active = document.querySelectorAll(`.option-btn[onclick*="${state.preferences.length}"], .option-btn[onclick*="${state.preferences.treatment}"]`);
-            active.forEach(btn => btn.classList.add('active'));
+            const available = getAvailableTreatments(state.preferences.length);
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('active', 'disabled');
+                // treatment 버튼 딤 처리
+                const match = btn.getAttribute('onclick') && btn.getAttribute('onclick').match(/setPreference\('treatment',\s*'(\w+)'\)/);
+                if (match) {
+                    if (!available.includes(match[1])) {
+                        btn.classList.add('disabled');
+                    }
+                }
+            });
+            const active = document.querySelectorAll(`.option-btn[onclick*="'${state.preferences.length}'"], .option-btn[onclick*="'${state.preferences.treatment}'"]`);
+            active.forEach(btn => { if (!btn.classList.contains('disabled')) btn.classList.add('active'); });
             document.getElementById('promptSubmit').disabled = !state.preferences.length || !state.preferences.treatment;
         }
 
@@ -869,52 +905,54 @@
             goToStep('result');
         }
 
+        const HAIR_PROMPTS = {
+            1: 'long wavy hair with beautiful waves flowing down',
+            2: 'medium length sleek straight hair with magic perm',
+            3: 'short sleek straight hair',
+            4: 'classic bob cut hair style',
+            5: 'long layered hair with movement',
+            6: 'medium length wavy permed hair with volume',
+            7: 'short straight pixie cut hair',
+            8: 'short fringe bob haircut'
+        };
+
         async function createMergedImage() {
             const btn = document.getElementById('mergeBtn');
             const loader = document.getElementById('mergingLoader');
-            
             btn.style.display = 'none';
             loader.style.display = 'block';
 
             try {
-                const response = await fetch('/api/merge', {
+                const hairPrompt = HAIR_PROMPTS[state.selectedStyle.id] || state.selectedStyle.enName + ' hairstyle';
+                const prompt = `${hairPrompt}, same person, keep face identical, photorealistic portrait, high quality`;
+
+                const resp = await fetch('/api/merge', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        sourceImage: state.photoData,
-                        targetImage: state.selectedStyle.image
-                    })
+                    body: JSON.stringify({ image: state.photoData, prompt })
                 });
 
-                const data = await response.json();
-
-                if (data.error) {
-                    alert('합성 실패: ' + data.error);
-                    btn.style.display = 'block';
-                    loader.style.display = 'none';
-                    return;
-                }
+                const data = await resp.json();
+                if (!resp.ok || data.error) throw new Error(data.error || 'API 오류');
 
                 state.mergedImage = data.image;
-                const mergedImg = document.getElementById('mergedImage');
-                mergedImg.src = data.image;
-                mergedImg.style.display = 'block';
+                document.getElementById('mergedImage').src = data.image;
+                document.getElementById('mergeResultBox').style.display = 'block';
+                loader.style.display = 'none';
 
-                document.getElementById('downloadBtn').style.display = 'block';
-                loader.style.display = 'none';
             } catch (err) {
-                alert('오류: ' + err.message);
-                btn.style.display = 'block';
                 loader.style.display = 'none';
+                btn.style.display = 'block';
+                alert('AI 합성 실패: ' + err.message);
             }
         }
 
         function downloadMergedImage() {
             if (!state.mergedImage) return;
-            const link = document.createElement('a');
-            link.href = state.mergedImage;
-            link.download = `HairAI-${state.selectedStyle.name}.png`;
-            link.click();
+            const a = document.createElement('a');
+            a.href = state.mergedImage;
+            a.download = `HairAI-${state.selectedStyle.name}.jpg`;
+            a.click();
         }
 
         function shareToX() {
@@ -951,8 +989,11 @@
             document.getElementById('photoInput').value = '';
             document.getElementById('uploadPlaceholder').style.display = 'flex';
             document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('photoPreview').src = '';
+            document.getElementById('nextBtnWrap').style.display = 'none';
             goToStep('upload');
         }
+        // 토큰 UI 없음 - 서버측 하드코딩
     </script>
 </body>
 </html>

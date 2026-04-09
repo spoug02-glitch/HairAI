@@ -3,64 +3,63 @@ export default async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { sourceImage, targetImage } = req.body;
-
-  if (!sourceImage || !targetImage) {
-    return res.status(400).json({ error: 'Missing images' });
+  const { image, prompt } = req.body;
+  if (!image || !prompt) {
+    return res.status(400).json({ error: 'Missing image or prompt' });
   }
 
+  const TOKEN = process.env.REPLICATE_API_KEY;
+
   try {
-    // Replicate API 호출
-    const response = await fetch('https://api.replicate.com/v1/predictions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${process.env.REPLICATE_API_KEY}`,
-      },
-      body: JSON.stringify({
-        version: '29f7d058a0938ab21ed3e9e8fba15e010b5cef40',  // face-swap 모델
-        input: {
-          source_image: sourceImage,  // 사용자 얼굴
-          target_image: targetImage,  // 헤어스타일 이미지
+    // instruct-pix2pix 예측 시작
+    const startRes = await fetch(
+      'https://api.replicate.com/v1/models/timbrooks/instruct-pix2pix/predictions',
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Token ${TOKEN}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'wait',
         },
-      }),
-    });
+        body: JSON.stringify({
+          input: {
+            image,
+            prompt,
+            num_inference_steps: 30,
+            image_guidance_scale: 1.5,
+            guidance_scale: 7,
+          },
+        }),
+      }
+    );
 
-    const prediction = await response.json();
-
-    if (prediction.error) {
-      return res.status(400).json({ error: prediction.error });
+    if (!startRes.ok) {
+      const err = await startRes.json();
+      return res.status(startRes.status).json({ error: err.detail || 'Replicate error' });
     }
 
-    // 결과 대기
-    let result = prediction;
+    let pred = await startRes.json();
+
+    // 폴링 (Prefer:wait 가 60s 내 완료 못 하면 이쪽으로 넘어옴)
     let attempts = 0;
-    const maxAttempts = 120;
-
-    while ((result.status === 'starting' || result.status === 'processing') && attempts < maxAttempts) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const statusRes = await fetch(
-        `https://api.replicate.com/v1/predictions/${result.id}`,
-        {
-          headers: {
-            'Authorization': `Token ${process.env.REPLICATE_API_KEY}`,
-          },
-        }
-      );
-
-      result = await statusRes.json();
+    while ((pred.status === 'starting' || pred.status === 'processing') && attempts < 60) {
+      await new Promise(r => setTimeout(r, 2000));
+      const poll = await fetch(`https://api.replicate.com/v1/predictions/${pred.id}`, {
+        headers: { 'Authorization': `Token ${TOKEN}` },
+      });
+      pred = await poll.json();
       attempts++;
     }
 
-    if (result.status === 'succeeded') {
-      return res.status(200).json({ image: result.output });
-    } else if (result.status === 'failed') {
-      return res.status(400).json({ error: 'Processing failed' });
+    if (pred.status === 'succeeded') {
+      const src = Array.isArray(pred.output) ? pred.output[0] : pred.output;
+      return res.status(200).json({ image: src });
+    } else if (pred.status === 'failed') {
+      return res.status(400).json({ error: pred.error || 'failed' });
     } else {
-      return res.status(500).json({ error: 'Processing timeout' });
+      return res.status(500).json({ error: 'timeout' });
     }
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
 };
