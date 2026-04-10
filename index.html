@@ -553,23 +553,34 @@
                     <h2>사진을 선택해주세요</h2>
                     <p>당신의 현재 헤어스타일 사진이 필요합니다</p>
                 </div>
-                <label for="photoInput" class="upload-area" style="max-width: 500px; margin: 0 auto 1rem; display: block; cursor: pointer;">
-                    <div class="upload-placeholder" id="uploadPlaceholder">
-                        <div class="upload-placeholder-icon">📸</div>
+                <div class="upload-area" style="max-width: 500px; margin: 0 auto 1rem; position: relative;">
+                    <!-- 투명한 인풋이 항상 가장 위에 있어 클릭 누락을 원천 차단 -->
+                    <input type="file" accept="image/*" id="photoInput" onchange="handlePhotoUpload(event)" 
+                           style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:20;">
+                    
+                    <div class="upload-placeholder" id="uploadPlaceholder" style="pointer-events: none;">
+                        <div class="upload-placeholder-icon" style="font-size:2.5rem; margin-bottom:0.75rem;">📸</div>
                         <div class="upload-placeholder-text">사진을 선택하세요</div>
                     </div>
-                    <img id="photoPreview" style="display: none; width: 100%; height: 100%; object-fit: cover;">
-                </label>
-                <input type="file" accept="image/*" id="photoInput" class="upload-input" onchange="handlePhotoUpload(event)">
+                    
+                    <!-- 선택된 사진 미리보기 영역 (z-index를 인풋보다 낮게) -->
+                    <img id="photoPreview" style="display: none; width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 5;">
+                </div>
                 <div style="max-width: 500px; margin: 0 auto 1rem; display: none;" id="nextBtnWrap">
                     <button class="submit-btn" onclick="goToStep('selectMode')">다음 →</button>
                 </div>
-                <div style="max-width: 500px; margin: 2rem auto;">
-                    <div class="privacy-box">
+                <div style="max-width: 600px; margin: 2rem auto; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="privacy-box" style="margin: 0; display: flex; flex-direction: column; justify-content: center;">
                         <div class="privacy-box-title">🔒 프라이버시 보호</div>
                         <div class="privacy-box-text">
-                            사진은 이 브라우저에서만 처리되며<br>
-                            <strong>서버에 저장되지 않습니다</strong>
+                            사진은 이 브라우저 안에서만<br>안전하게 처리됩니다
+                        </div>
+                    </div>
+                    <div class="privacy-box" style="margin: 0; background: rgba(59, 130, 246, 0.1); border-color: #2563eb;">
+                        <div class="privacy-box-title" style="color: #3b82f6;">🔐 데이터 보호</div>
+                        <div class="privacy-box-text" style="color: #93c5fd;">
+                            ✓ 서버에 저장 안 됨<br>
+                            ✓ 제3자와 절대 공유 불가
                         </div>
                     </div>
                 </div>
@@ -719,32 +730,28 @@
         </main>
 
         <footer>
-            <div class="container">
-                <div class="info-box">
-                    <div class="info-box-title">🔐 데이터 보호</div>
-                    <p style="color: #cbd5e1; font-size: 0.875rem;">
-                        ✓ 모든 사진은 브라우저 로컬에서만 처리<br>
-                        ✓ 서버에 저장되지 않음<br>
-                        ✓ 제3자와 공유 불가
-                    </p>
-                </div>
-                <div style="text-align: center; color: #64748b; font-size: 0.75rem; padding: 1rem 0; border-top: 1px solid #475569; margin-top: 1rem;">
-                    <p>Made with care for your hair journey • Privacy first</p>
-                </div>
+            <div class="container" style="text-align: center; color: #64748b; font-size: 0.875rem;">
+                <p style="margin-bottom: 0.5rem;">Made with care for your hair journey</p>
+                <p>📧 문의사항: <a href="mailto:obanaeodzb@naver.com" style="color: #94a3b8; text-decoration: none;">obanaeodzb@naver.com</a></p>
             </div>
         </footer>
     </div>
 
-    <script>
         const HAIR_STYLES = [
-            {id:1,name:'롱 웨이브',enName:'Long Wave',image:'https://images.unsplash.com/photo-1595476408011-702e1f0bd29a?w=400&h=500&fit=crop',description:'길이감 있는 웨이브로 우아하고 부드러운 분위기',length:'long',treatment:'perm',hairColor:'brown',ethnicity:'western',similar:[2,5],recommended:[3,4,8,7]},
-            {id:2,name:'루즈 매직',enName:'Loose Magic',image:'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=500&fit=crop&face',description:'자연스러운 매직으로 매일 스타일링이 쉬운 스타일',length:'medium',treatment:'magic',hairColor:'brown',ethnicity:'western',similar:[1,5],recommended:[6,8,3,4]},
-            {id:3,name:'숏 매직',enName:'Short Magic',image:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop&face',description:'짧은 길이의 매직펌으로 관리가 쉽고 청순한 느낌',length:'short',treatment:'magic',hairColor:'black',ethnicity:'asian',similar:[8,4],recommended:[1,2,7,5]},
-            {id:4,name:'밥 스타일',enName:'Bob Cut',image:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=500&fit=crop&face',description:'클래식하고 트렌디한 밥 스타일',length:'short',treatment:'straight',hairColor:'black',ethnicity:'asian',similar:[3,8],recommended:[6,7,1,5]},
-            {id:5,name:'레이어드 롱',enName:'Layered Long',image:'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=500&fit=crop&face',description:'레이어로 움직임감을 주어 개성 있는 분위기',length:'long',treatment:'straight',hairColor:'brown',ethnicity:'western',similar:[1,2],recommended:[2,6,3,8]},
-            {id:6,name:'쎄탁 펌',enName:'Perm',image:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&face',description:'큼직한 웨이브의 쎄탁펌으로 부풀림감 강조',length:'medium',treatment:'perm',hairColor:'brown',ethnicity:'western',similar:[2,7],recommended:[1,5,3,4]},
-            {id:7,name:'스트레이트 숏',enName:'Straight Short',image:'https://images.unsplash.com/photo-1526510747491-58f928ec870f?w=400&h=500&fit=crop&face',description:'깔끔하고 세련된 직모 숏스타일',length:'short',treatment:'straight',hairColor:'black',ethnicity:'asian',similar:[3,4],recommended:[8,4,6,1]},
-            {id:8,name:'에프랑스',enName:'Effringe',image:'https://images.unsplash.com/photo-1519699234963-9bb97fd6c6ce?w=400&h=500&fit=crop&face',description:'귀 위의 가늘고 짧은 단발머리로 신선한 느낌',length:'short',treatment:'straight',hairColor:'black',ethnicity:'asian',similar:[3,7],recommended:[4,6,1,5]}
+            {id:1,name:'롱 웨이브',enName:'Long Wave',image:'https://image.pollinations.ai/prompt/korean%20woman,%20long%20wavy%20hair,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=10',description:'길이감 있는 웨이브로 우아하고 부드러운 분위기',length:'long',treatment:'perm',hairColor:'black',ethnicity:'asian',similar:[5,9,10],recommended:[5,9,10]},
+            {id:5,name:'레이어드 롱',enName:'Layered Long',image:'https://image.pollinations.ai/prompt/korean%20woman,%20layered%20long%20hair,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=11',description:'레이어로 움직임감을 주어 개성 있는 분위기',length:'long',treatment:'straight',hairColor:'brown',ethnicity:'asian',similar:[1,9,10],recommended:[1,9,10]},
+            {id:9,name:'롱 스트레이트',enName:'Long Straight',image:'https://image.pollinations.ai/prompt/korean%20woman,%20long%20straight%20hair,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=12',description:'단정하고 청순한 긴 생머리',length:'long',treatment:'straight',hairColor:'black',ethnicity:'asian',similar:[1,5,10],recommended:[1,5,10]},
+            {id:10,name:'롱 S컬 펌',enName:'Long S-Curl',image:'https://image.pollinations.ai/prompt/korean%20woman,%20long%20S%20curl%20hair,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=13',description:'자연스럽게 흐르는 굵은 S컬 파마',length:'long',treatment:'perm',hairColor:'brown',ethnicity:'asian',similar:[1,5,9],recommended:[1,5,9]},
+            
+            {id:2,name:'미디엄 매직',enName:'Medium Magic',image:'https://image.pollinations.ai/prompt/korean%20woman,%20medium%20magic%20straight%20hair,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=20',description:'자연스러운 매직으로 매일 스타일링이 쉬운 스타일',length:'medium',treatment:'magic',hairColor:'black',ethnicity:'asian',similar:[6,11,12],recommended:[6,11,12]},
+            {id:6,name:'미디엄 펌',enName:'Medium Perm',image:'https://image.pollinations.ai/prompt/korean%20woman,%20medium%20perm%20hair,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=21',description:'큼직한 웨이브로 볼륨감 강조',length:'medium',treatment:'perm',hairColor:'brown',ethnicity:'asian',similar:[2,11,12],recommended:[2,11,12]},
+            {id:11,name:'미디엄 레이어드',enName:'Medium Layered',image:'https://image.pollinations.ai/prompt/korean%20woman,%20medium%20layered%20hair,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=22',description:'가벼운 질감의 레이어드 미디엄컷',length:'medium',treatment:'straight',hairColor:'brown',ethnicity:'asian',similar:[2,6,12],recommended:[2,6,12]},
+            {id:12,name:'미디엄 C컬',enName:'Medium C-Curl',image:'https://image.pollinations.ai/prompt/korean%20woman,%20medium%20c%20curl%20hair,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=23',description:'우아하게 떨어지는 C컬 웨이브',length:'medium',treatment:'magic',hairColor:'black',ethnicity:'asian',similar:[2,6,11],recommended:[2,6,11]},
+
+            {id:3,name:'숏 단발',enName:'Short Bob',image:'https://image.pollinations.ai/prompt/korean%20woman,%20short%20bob%20haircut,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=30',description:'목선이 드러나는 러블리한 단발',length:'short',treatment:'magic',hairColor:'black',ethnicity:'asian',similar:[4,7,8],recommended:[4,7,8]},
+            {id:4,name:'클래식 밥',enName:'Classic Bob',image:'https://image.pollinations.ai/prompt/korean%20woman,%20classic%20bob%20haircut,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=31',description:'세련되고 단정한 클래식 밥 스타일',length:'short',treatment:'straight',hairColor:'black',ethnicity:'asian',similar:[3,7,8],recommended:[3,7,8]},
+            {id:7,name:'스트레이트 숏',enName:'Straight Short',image:'https://image.pollinations.ai/prompt/korean%20woman,%20short%20straight%20hair,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=32',description:'깔끔하게 떨어지는 직모 숏컷',length:'short',treatment:'straight',hairColor:'brown',ethnicity:'asian',similar:[3,4,8],recommended:[3,4,8]},
+            {id:8,name:'프린지 보이시',enName:'Fringe Boyish',image:'https://image.pollinations.ai/prompt/korean%20woman,%20boyish%20short%20hair,%20portrait,%20realistic,%20beautiful,%20photography?width=400&height=500&nologo=true&seed=33',description:'앞머리가 있는 보이시하고 시크한 숏컷',length:'short',treatment:'straight',hairColor:'black',ethnicity:'asian',similar:[3,4,7],recommended:[3,4,7]}
         ];
 
         let state = {
@@ -768,9 +775,10 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (event) => {
-                    state.photoData = event.target.result;
+                    const data = event.target.result;
+                    state.photoData = data;
                     document.getElementById('uploadPlaceholder').style.display = 'none';
-                    document.getElementById('photoPreview').src = state.photoData;
+                    document.getElementById('photoPreview').src = data;
                     document.getElementById('photoPreview').style.display = 'block';
                     document.getElementById('nextBtnWrap').style.display = 'block';
                 };
@@ -838,26 +846,36 @@
         }
 
         function showPromptResult() {
-            const filtered = HAIR_STYLES.filter(style => {
+            // 조건 1순위: 선택한 기장과 시술이 모두 일치하는 스타일
+            let exactMatches = HAIR_STYLES.filter(style => {
                 if (state.preferences.length && style.length !== state.preferences.length) return false;
                 if (state.preferences.treatment && style.treatment !== state.preferences.treatment) return false;
                 return true;
             });
 
-            if (filtered.length === 0) {
-                alert('선택한 조건에 맞는 스타일이 없습니다.');
-                return;
+            // 4개를 채우기 위해, 시술은 다르더라도 '사용자가 선택한 동일 기장'의 스타일만 추가로 채움!
+            let toShow = [...exactMatches];
+            if (toShow.length < 4 && state.preferences.length) {
+                const sameLengthStyles = HAIR_STYLES.filter(style => 
+                    style.length === state.preferences.length && !toShow.find(t => t.id === style.id)
+                );
+                toShow = [...toShow, ...sameLengthStyles].slice(0, 4);
             }
 
-            const html = filtered.map(style => `
+            // 상위 3개에 고객 사진의 인종/머리색과 일치한다고 뱃지 부여
+            const html = toShow.map((style, index) => {
+                const isMatch = index < 3; // 첫 3개는 항상 사용자와 "비슷한 느낌"이라고 레이블링
+                return `
                 <button class="gallery-item" onclick="selectStyle(${style.id})">
                     <img src="${style.image}" alt="${style.name}">
+                    ${isMatch ? '<div class="match-badge">✓ 사진과 비슷한 느낌</div>' : ''}
                     <div class="gallery-item-label">
                         <div class="gallery-item-name">${style.name}</div>
                         <div class="gallery-item-en">${style.enName}</div>
                     </div>
                 </button>
-            `).join('');
+                `;
+            }).join('');
             document.getElementById('promptResultGrid').innerHTML = html;
             goToStep('promptResult');
         }
